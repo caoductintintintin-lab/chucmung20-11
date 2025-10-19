@@ -287,12 +287,17 @@
           document.body.appendChild(flower);
         }
 
-        // Bắt đầu hiệu ứng cánh hoa rơi
         startPetalFall();
+const audio = new Audio('nhac.mp3'); 
+        audio.loop = true;
+        audio.play().catch(error => {
+            console.warn("Trình duyệt đã chặn tự động phát nhạc. Cần người dùng tương tác.");
+            document.body.addEventListener('click', () => audio.play(), { once: true });
+        });
+
       }, 5000);
 
 
-      // 🌸 JavaScript cho hiệu ứng cánh hoa rơi
       function createPetal() {
         const petal = document.createElement("div");
         petal.classList.add("petal");
