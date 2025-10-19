@@ -129,14 +129,8 @@
         0% {
           opacity: 0;
         }
-        30% {
-          opacity: 1;
-        }
-        90% {
-          opacity: 1;
-        }
         100% {
-          opacity: 0;
+          opacity: 1; /* Mờ vào và giữ nguyên */
         }
       }
 
@@ -174,16 +168,16 @@
   </head>
   <body>
     <canvas id="fireworks"></canvas>
-    <div class="intro-text">💥 Happy Vietnamese Women's Day 20/10 💥</div>
+    <div class="intro-text">💥 Chúc mừng ngày Phụ nữ Việt Nam 20/10 💥</div>
 
     <div class="main" id="main-screen">
       <div class="message" id="wish-text">
         Chúc Hoàng Thị Hải Yến một ngày 20/10 thật vui vẻ, xinh đẹp và hạnh phúc nhé 🌸
       </div>
     </div>
-
+    
     <script>
-      // 🎆 Hiệu ứng pháo hoa
+      // 🎆 Hiệu ứng pháo hoa (Khai báo)
       const canvas = document.getElementById("fireworks");
       const ctx = canvas.getContext("2d");
       canvas.width = window.innerWidth;
@@ -267,37 +261,13 @@
         if (Math.random() < 0.05) fireworks.push(new Firework());
         requestAnimationFrame(animate);
       }
-      animate();
+      
+      // 🎵 Thiết lập Audio
+      const audio = new Audio('nhac.mp3');
+      audio.loop = true;
+      audio.preload = 'auto'; 
 
-      // Sau 5 giây: hiện màn chính
-      setTimeout(() => {
-        document.getElementById("main-screen").style.opacity = 1;
-        canvas.style.display = "none";
-
-        // Tạo hoa mọc
-        // JavaScript không cần thay đổi!
-        // Nó vẫn tạo 1 div với class="flower" như cũ
-        // Nhưng giờ div đó sẽ lấy CSS từ file flower.css
-        for (let i = 0; i < 10; i++) {
-          const flower = document.createElement("div");
-          flower.classList.add("flower");
-          flower.style.left = Math.random() * 100 + "vw";
-          flower.style.animationDelay = Math.random() * 2 + "s";
-          flower.style.animationDuration = 3 + Math.random() * 2 + "s";
-          document.body.appendChild(flower);
-        }
-
-        startPetalFall();
-const audio = new Audio('nhac.mp3'); 
-        audio.loop = true;
-        audio.play().catch(error => {
-            console.warn("Trình duyệt đã chặn tự động phát nhạc. Cần người dùng tương tác.");
-            document.body.addEventListener('click', () => audio.play(), { once: true });
-        });
-
-      }, 5000);
-
-
+      // 🌸 Hàm tạo cánh hoa (Khai báo)
       function createPetal() {
         const petal = document.createElement("div");
         petal.classList.add("petal");
@@ -327,6 +297,69 @@ const audio = new Audio('nhac.mp3');
       function startPetalFall() {
         setInterval(createPetal, 500);
       }
+
+      // 🚀 HÀM KHỞI ĐỘNG CHÍNH (Sẽ chạy khi người dùng click)
+      function startExperience() {
+        // 1. Phát nhạc (Chạy khi click)
+        audio.play().catch(error => {
+            console.warn("Lỗi phát nhạc dù đã click:", error);
+        });
+
+        // 2. Bắt đầu bắn pháo hoa
+        animate();
+        
+        // Lấy thẻ intro-text ra trước
+        const introText = document.querySelector('.intro-text');
+
+        // 3. Bắt đầu đếm 10s
+        setTimeout(() => {
+          // --- HẾT 10 GIÂY THÌ ---
+          // a. Ẩn pháo hoa
+          canvas.style.display = "none"; 
+
+          // b. Ẩn intro text (THEO YÊU CẦU MỚI)
+          introText.style.display = 'none';
+
+          // c. Hiện màn hình chính
+          document.getElementById("main-screen").style.opacity = 1;
+
+          // d. Tạo hoa mọc
+          for (let i = 0; i < 10; i++) {
+            const flower = document.createElement("div");
+            flower.classList.add("flower");
+            flower.style.left = Math.random() * 100 + "vw";
+            flower.style.animationDelay = Math.random() * 2 + "s";
+            flower.style.animationDuration = 3 + Math.random() * 2 + "s";
+            document.body.appendChild(flower);
+          }
+
+          // e. Bắt đầu cánh hoa rơi
+          startPetalFall();
+        }, 10000); // Bạn đang để 10 giây
+        
+        
+        // 4. (Tùy chọn) Ẩn con trỏ và xóa chữ "click"
+        // --- NGAY KHI CLICK THÌ ---
+        introText.style.cursor = 'default';
+        // Xóa phần "(Click để bắt đầu)"
+        introText.innerHTML = introText.innerHTML.split('<br>')[0];
+        // BỎ DÒNG introText.style.display = 'none'; TỪ ĐÂY
+      }
+      
+      // === THAY ĐỔI THEO YÊU CẦU ===
+      // 1. KHÔNG thử phát nhạc nữa. Chỉ chờ click.
+      // ==============================
+
+      // 2. Thêm dòng chữ "Click để bắt đầu"
+      const introText = document.querySelector('.intro-text');
+      introText.innerHTML += "<br><span style='font-size: 1.5rem; color: #fff; text-shadow: none;'>(Click để bắt đầu)</span>";
+      introText.style.cursor = 'pointer'; // Biến intro-text thành con trỏ "bàn tay"
+
+      // 3. Thêm trình lắng nghe sự kiện click
+      // Nó sẽ chờ người dùng click *bất cứ đâu* trên trang
+      // { once: true } nghĩa là nó sẽ chỉ chạy 1 lần duy nhất rồi tự hủy
+      document.body.addEventListener('click', startExperience, { once: true });
+
     </script>
   </body>
 </html>
