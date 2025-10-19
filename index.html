@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chúc mừng 20/10 - Hoàng Thị Hải Yến 🌸</title>
+
+    <link rel="stylesheet" href="flower.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 100vh;
+        overflow: hidden;
+        background: black;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        background: radial-gradient(circle at bottom, #000 60%, #111);
+      }
+
+      .main {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: url("background.png") no-repeat center center/cover;
+        opacity: 0;
+        z-index: 3;
+        transition: opacity 1.2s ease-in-out;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .message {
+        font-size: 2.2rem;
+        color: #ff69b4;
+        font-weight: bold;
+        background: linear-gradient(
+          90deg,
+          #ff69b4,
+          #fff,
+          #ffc0cb,
+          #ff69b4
+        );
+        background-size: 200% auto;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        opacity: 0;
+        animation: 
+          dropDown 2.5s ease-out 0.5s forwards,
+          shine 3s linear 3.0s infinite;
+      }
+
+
+      @keyframes dropDown {
+        0% {
+          transform: translateY(-120px);
+          opacity: 0;
+        }
+        70% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes shine {
+        0% {
+          background-position: 200% center;
+        }
+        100% {
+          background-position: -200% center;
+        }
+      }
+
+      /* === ĐÃ XÓA CSS CỦA .flower CŨ TỪ ĐÂY === */
+      /* CSS của .flower đã được chuyển sang file flower.css 
+      */
+      
+      /* Giữ lại animation growUp vì file flower.css đang dùng nó */
+      @keyframes growUp {
+        0% {
+          transform: translateY(100px) scale(0);
+          opacity: 0;
+        }
+        70% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+      }
+      
+      .intro-text {
+        position: absolute;
+        top: 45%;
+        width: 100%;
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #ffd700;
+        text-shadow: 2px 2px 10px #ff66cc;
+        opacity: 0;
+        z-index: 4;
+        animation: introFade 5s ease-out forwards;
+      }
+
+      @keyframes introFade {
+        0% {
+          opacity: 0;
+        }
+        30% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      .petal {
+        position: absolute;
+        background-color: #ffc0cb; /* Màu hồng nhạt */
+        border-radius: 50% 10% / 50% 50%;
+        width: 15px;
+        height: 15px;
+        opacity: 0;
+        animation-fill-mode: forwards;
+        pointer-events: none; /* Không cản trở tương tác chuột */
+        z-index: 4; /* Đảm bảo cánh hoa rơi nằm trên background */
+      }
+
+      @keyframes petalFall {
+        0% {
+          transform: translate3d(0, -10vh, 0) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+            opacity: 0.8;
+        }
+        100% {
+          transform: translate3d(
+              var(--petal-end-x),
+              105vh,
+              0
+            )
+            rotate(var(--petal-rotate-end));
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="fireworks"></canvas>
+    <div class="intro-text">💥 Happy Vietnamese Women's Day 20/10 💥</div>
+
+    <div class="main" id="main-screen">
+      <div class="message" id="wish-text">
+        Chúc Hoàng Thị Hải Yến một ngày 20/10 thật vui vẻ, xinh đẹp và hạnh phúc nhé 🌸
+      </div>
+    </div>
+
+    <script>
+      // 🎆 Hiệu ứng pháo hoa
+      const canvas = document.getElementById("fireworks");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const fireworks = [];
+
+      function random(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      class Firework {
+        constructor() {
+          this.x = random(0, canvas.width);
+          this.y = canvas.height;
+          this.targetY = random(canvas.height / 4, canvas.height / 2);
+          this.color = `hsl(${random(0, 360)}, 100%, 70%)`;
+          this.trail = [];
+          this.done = false;
+        }
+
+        update() {
+          this.trail.push({ x: this.x, y: this.y });
+          if (this.trail.length > 10) this.trail.shift();
+          this.y -= 10;
+          if (this.y < this.targetY) {
+            this.explode();
+            this.done = true;
+          }
+        }
+
+        explode() {
+          for (let i = 0; i < 30; i++) {
+            fireworks.push(new Particle(this.x, this.y, this.color));
+          }
+        }
+
+        draw() {
+          ctx.beginPath();
+          ctx.strokeStyle = this.color;
+          ctx.moveTo(this.trail[0]?.x || this.x, this.trail[0]?.y || this.y);
+          this.trail.forEach((p) => ctx.lineTo(p.x, p.y));
+          ctx.stroke();
+        }
+      }
+
+      class Particle {
+        constructor(x, y, color) {
+          this.x = x;
+          this.y = y;
+          this.color = color;
+          this.vx = random(-3, 3);
+          this.vy = random(-3, 3);
+          this.alpha = 1;
+        }
+
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.alpha -= 0.02;
+        }
+
+        draw() {
+          ctx.globalAlpha = this.alpha;
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      function animate() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        fireworks.forEach((fw, i) => {
+          fw.update();
+          fw.draw();
+          if (fw.done && fw.alpha <= 0) fireworks.splice(i, 1);
+        });
+        if (Math.random() < 0.05) fireworks.push(new Firework());
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      // Sau 5 giây: hiện màn chính
+      setTimeout(() => {
+        document.getElementById("main-screen").style.opacity = 1;
+        canvas.style.display = "none";
+
+        // Tạo hoa mọc
+        // JavaScript không cần thay đổi!
+        // Nó vẫn tạo 1 div với class="flower" như cũ
+        // Nhưng giờ div đó sẽ lấy CSS từ file flower.css
+        for (let i = 0; i < 10; i++) {
+          const flower = document.createElement("div");
+          flower.classList.add("flower");
+          flower.style.left = Math.random() * 100 + "vw";
+          flower.style.animationDelay = Math.random() * 2 + "s";
+          flower.style.animationDuration = 3 + Math.random() * 2 + "s";
+          document.body.appendChild(flower);
+        }
+
+        // Bắt đầu hiệu ứng cánh hoa rơi
+        startPetalFall();
+      }, 5000);
+
+
+      // 🌸 JavaScript cho hiệu ứng cánh hoa rơi
+      function createPetal() {
+        const petal = document.createElement("div");
+        petal.classList.add("petal");
+        document.body.appendChild(petal);
+
+        petal.style.left = Math.random() * 100 + "vw";
+        petal.style.top = -20 + "px";
+
+        const size = random(10, 25);
+        petal.style.width = size + "px";
+        petal.style.height = size + "px";
+
+        const duration = random(8, 15);
+        petal.style.animationDuration = duration + "s";
+        petal.style.animationDelay = random(0, 5) + "s";
+
+        petal.style.setProperty("--petal-end-x", random(-50, 50) + "vw");
+        petal.style.setProperty("--petal-rotate-end", random(720, 1440) + "deg");
+
+        petal.style.animationName = "petalFall";
+
+        petal.addEventListener("animationend", () => {
+          petal.remove();
+        });
+      }
+
+      function startPetalFall() {
+        setInterval(createPetal, 500);
+      }
+    </script>
+  </body>
+</html>

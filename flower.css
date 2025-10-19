@@ -1,0 +1,85 @@
+/* Đây là file flower.css (Phiên bản Nâng cấp 3.0) */
+
+.flower {
+    /* THÂN CÂY (Stem) */
+    position: absolute;
+    bottom: 0;
+    width: 5px; /* Thân cây nhỏ lại 1 chút */
+    height: 70px; /* Cao hơn */
+    
+    /* Thêm gradient cho thân cây nhìn "tròn" và thực tế hơn */
+    background: linear-gradient(
+      to right, 
+      #006400 0%, /* Xanh lá tối (bên trái) */
+      #2e8b57 50%, /* Xanh lá vừa (ở giữa) */
+      #006400 100% /* Xanh lá tối (bên phải) */
+    );
+    
+    border-radius: 3px;
+    z-index: 4;
+  
+    /* Animation growUp vẫn được lấy từ file index.html */
+    opacity: 0;
+    animation: growUp 4s ease-out forwards;
+  }
+  
+  .flower::after {
+    /* CHIẾC LÁ (Leaf) */
+    content: "";
+    position: absolute;
+    width: 30px; /* Lá rộng hơn */
+    height: 25px; /* Lá cao hơn */
+    
+    /* Thêm gradient cho lá nhìn có chiều sâu */
+    background: radial-gradient(
+      circle at top left, 
+      #32cd32, /* Xanh lá tươi */
+      #228b22  /* Xanh rêu */
+    );
+    
+    /* Vị trí mọc ra từ 1/3 thân cây */
+    bottom: 25px; 
+    left: 4px; /* Mọc ra từ bên phải thân */
+    
+    /* Dùng border-radius để tạo hình lá nhọn 2 đầu, mềm mại */
+    border-radius: 100% 0% 100% 0%;
+    transform: rotate(-20deg); /* Hơi nghiêng lá xuống */
+  }
+  
+  
+  .flower::before {
+    /* PHẦN NÀY LÀ CẢ BÔNG HOA (Gồm Nhụy + Cánh)
+      Bản thân ::before sẽ là NHỤY HOA (Pistil) ở giữa
+    */
+    content: "";
+    position: absolute;
+    width: 15px; /* Kích thước nhụy */
+    height: 15px;
+    
+    /* Đặt nhụy hoa ngay trên đỉnh thân cây (cao 70px) */
+    bottom: 72px; /* Nhô cao hơn thân cây 2px */
+    left: 50%;
+    transform: translateX(-50%); /* Căn giữa nhụy với thân */
+    
+    /* Vẽ nhụy hoa */
+    background: #ffd700; /* Màu vàng Gold */
+    border-radius: 50%; /* Hình tròn */
+    
+    /* Bây giờ, chúng ta "vẽ" các CÁNH HOA (Petals) 
+      bằng cách tạo bóng (box-shadow) cho nhụy hoa.
+      Mỗi cánh hoa thực chất là một cái bóng hình tròn.
+    */
+    box-shadow: 
+      /* Lớp cánh 1 (Màu hồng nhạt #FFB6C1) */
+      /* [X-offset] [Y-offset] [blur] [color] */
+      0 -18px 0 #FFB6C1, /* Cánh trên */
+      0 18px 0 #FFB6C1, /* Cánh dưới */
+      -18px 0 0 #FFB6C1, /* Cánh trái */
+      18px 0 0 #FFB6C1, /* Cánh phải */
+      
+      /* Lớp cánh 2 (Xoay 45 độ, màu hồng đậm #FF69B4) */
+      13px -13px 0 #FF69B4, /* Cánh trên-phải */
+      -13px -13px 0 #FF69B4, /* Cánh trên-trái */
+      13px 13px 0 #FF69B4, /* Cánh dưới-phải */
+      -13px 13px 0 #FF69B4; /* Cánh dưới-trái */
+  }
