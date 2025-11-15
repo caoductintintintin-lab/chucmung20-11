@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chúc mừng 20/10 - Hoàng Thị Hải Yến 🌸</title>
+    <title>Lời chúc tốt đẹp - Hoàng Thị Hải Yến 🌸</title>
 
     <link rel="stylesheet" href="flower.css" />
     <style>
@@ -168,15 +168,66 @@
   </head>
   <body>
     <canvas id="fireworks"></canvas>
-    <div class="intro-text">💥 Chúc mừng ngày Phụ nữ Việt Nam 20/10 💥</div>
+    <div class="intro-text" id="intro-message">
+        </div>
 
     <div class="main" id="main-screen">
       <div class="message" id="wish-text">
-        Chúc Hoàng Thị Hải Yến một ngày 20/10 thật vui vẻ, xinh đẹp và hạnh phúc nhé 🌸
-      </div>
+        </div>
     </div>
     
     <script>
+      // 📝 Hàm lấy ngày hiện tại
+      function getFormattedDate() {
+          const today = new Date();
+          const day = String(today.getDate()).padStart(2, '0');
+          const month = String(today.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+          const year = today.getFullYear();
+          return `${day}/${month}/${year}`;
+      }
+      
+      const currentDate = getFormattedDate();
+
+      // ============== PHẦN CẬP NHẬT MỚI: LỜI CHÚC Ý NGHĨA HƠN VÀ THAY ĐỔI MỖI NGÀY ==============
+      
+      const meaningfulWishes = [
+        "Cuộc sống là món quà. Chúc Hoàng Thị Hải Yến luôn tìm thấy niềm vui trong mỗi khoảnh khắc và tỏa sáng theo cách riêng của mình. ✨",
+        "Chúc Yến có một ngày tràn đầy năng lượng tích cực, sự bình an trong tâm hồn và thành công rực rỡ với mọi dự định. 💪💖",
+        "Hãy luôn nhớ rằng, Yến là phiên bản độc đáo và tuyệt vời nhất. Chúc Yến giữ mãi nụ cười rạng rỡ trên môi! 😊",
+        "Mong rằng mỗi ngày của Yến đều là một chuyến phiêu lưu mới, mang đến những trải nghiệm đáng nhớ và những bài học quý giá. 🗺️",
+        "Chúc Yến luôn được bao quanh bởi yêu thương, may mắn và những người bạn/đồng nghiệp tuyệt vời. Hạnh phúc đến từ những điều nhỏ bé nhất! 💐",
+        "Gửi tới Yến lời chúc chân thành nhất: Hãy mạnh mẽ, kiên cường và tự tin theo đuổi ước mơ, không bao giờ bỏ cuộc nhé! 🚀",
+        "Sức khỏe là vàng. Chúc Yến luôn khỏe mạnh cả về thể chất lẫn tinh thần để chinh phục mọi thử thách. 🏃‍♀️",
+        "Hôm nay là một ngày tuyệt vời để bắt đầu những điều mới. Chúc Yến có đủ dũng khí để bước ra khỏi vùng an toàn và gặt hái thành công. 🌷",
+        "Cầu mong mọi điều tốt đẹp nhất sẽ đến với Hoàng Thị Hải Yến, và mọi mong muốn thầm kín sẽ sớm trở thành hiện thực. 🙏",
+        "Chúc Yến một ngày thật đáng nhớ. Hãy tự thưởng cho bản thân những điều tuyệt vời nhất, vì Yến xứng đáng với tất cả! 🎁"
+      ];
+      
+      // Hàm tạo số ngẫu nhiên dựa trên ngày trong tháng để gần như đổi mỗi ngày (Hoặc bạn có thể dùng ngẫu nhiên hoàn toàn)
+      function getDailyRandomWish() {
+          const dayOfMonth = new Date().getDate(); // Lấy ngày (1-31)
+          // Dùng phép toán modulo để đảm bảo chỉ số không vượt quá độ dài mảng
+          const index = dayOfMonth % meaningfulWishes.length; 
+          return meaningfulWishes[index];
+          
+          // *Nếu bạn muốn hoàn toàn ngẫu nhiên mỗi lần tải trang, dùng:
+          // const randomIndex = Math.floor(Math.random() * meaningfulWishes.length);
+          // return meaningfulWishes[randomIndex];
+      }
+      
+      const selectedWish = getDailyRandomWish();
+      
+      // Cập nhật nội dung cho intro-text
+      const introTextElement = document.getElementById('intro-message');
+      introTextElement.innerHTML = `🌟 Chúc Yến mỗi ngày 1 niềm vui (${currentDate}) 🌟`;
+      
+      // Cập nhật nội dung cho wish-text BẰNG LỜI CHÚC NGẪU NHIÊN/THEO NGÀY
+      const wishTextElement = document.getElementById('wish-text');
+      wishTextElement.innerHTML = selectedWish;
+      
+      // ========================================================================================
+
+
       // 🎆 Hiệu ứng pháo hoa (Khai báo)
       const canvas = document.getElementById("fireworks");
       const ctx = canvas.getContext("2d");
@@ -194,7 +245,8 @@
           this.x = random(0, canvas.width);
           this.y = canvas.height;
           this.targetY = random(canvas.height / 4, canvas.height / 2);
-          this.color = `hsl(${random(0, 360)}, 100%, 70%)`;
+          // Cập nhật màu sắc cho Firework: dùng backticks để JS hiểu là template string
+          this.color = `hsl(${random(0, 360)}, 100%, 70%)`; 
           this.trail = [];
           this.done = false;
         }
@@ -308,17 +360,14 @@
         // 2. Bắt đầu bắn pháo hoa
         animate();
         
-        // Lấy thẻ intro-text ra trước
-        const introText = document.querySelector('.intro-text');
-
         // 3. Bắt đầu đếm 10s
         setTimeout(() => {
           // --- HẾT 10 GIÂY THÌ ---
           // a. Ẩn pháo hoa
           canvas.style.display = "none"; 
 
-          // b. Ẩn intro text (THEO YÊU CẦU MỚI)
-          introText.style.display = 'none';
+          // b. Ẩn intro text
+          introTextElement.style.display = 'none';
 
           // c. Hiện màn hình chính
           document.getElementById("main-screen").style.opacity = 1;
@@ -338,25 +387,17 @@
         }, 10000); // Bạn đang để 10 giây
         
         
-        // 4. (Tùy chọn) Ẩn con trỏ và xóa chữ "click"
-        // --- NGAY KHI CLICK THÌ ---
-        introText.style.cursor = 'default';
+        // 4. Cập nhật giao diện ngay khi click
+        introTextElement.style.cursor = 'default';
         // Xóa phần "(Click để bắt đầu)"
-        introText.innerHTML = introText.innerHTML.split('<br>')[0];
-        // BỎ DÒNG introText.style.display = 'none'; TỪ ĐÂY
+        introTextElement.innerHTML = introTextElement.innerHTML.split('<br>')[0];
       }
       
-      // === THAY ĐỔI THEO YÊU CẦU ===
-      // 1. KHÔNG thử phát nhạc nữa. Chỉ chờ click.
-      // ==============================
-
       // 2. Thêm dòng chữ "Click để bắt đầu"
-      const introText = document.querySelector('.intro-text');
-      introText.innerHTML += "<br><span style='font-size: 1.5rem; color: #fff; text-shadow: none;'>(Mở quà của Yến 🎁(Click))</span>";      introText.style.cursor = 'pointer'; // Biến intro-text thành con trỏ "bàn tay"
+      introTextElement.innerHTML += `<br><span style='font-size: 1.5rem; color: #fff; text-shadow: none;'>(Mở quà của Yến 🎁(Click))</span>`;      
+      introTextElement.style.cursor = 'pointer'; // Biến intro-text thành con trỏ "bàn tay"
 
       // 3. Thêm trình lắng nghe sự kiện click
-      // Nó sẽ chờ người dùng click *bất cứ đâu* trên trang
-      // { once: true } nghĩa là nó sẽ chỉ chạy 1 lần duy nhất rồi tự hủy
       document.body.addEventListener('click', startExperience, { once: true });
 
     </script>
